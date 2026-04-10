@@ -1,0 +1,213 @@
+/* Global styles */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 12%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 12%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 12%;
+    --primary: 0 0% 23%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 95%;
+    --secondary-foreground: 0 0% 14%;
+    --muted: 0 0% 94%;
+    --muted-foreground: 0 0% 42%;
+    --accent: 0 0% 94%;
+    --accent-foreground: 0 0% 34%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 86%;
+    --input: 0 0% 84%;
+    --ring: 0 0% 42%;
+    --ink-strong: 0 0% 12%;
+    --ink-medium: 0 0% 28%;
+    --ink-soft: 0 0% 45%;
+    --info: 211 95% 44%;
+    --info-foreground: 0 0% 98%;
+    --info-surface: 211 100% 97%;
+    --success: 123 34% 36%;
+    --success-foreground: 0 0% 98%;
+    --success-surface: 120 21% 95%;
+    --warning: 28 90% 50%;
+    --warning-foreground: 0 0% 98%;
+    --warning-surface: 34 100% 96%;
+    --danger: 0 78% 54%;
+    --danger-foreground: 0 0% 98%;
+    --danger-surface: 0 100% 97%;
+    --chart-1: var(--info);
+    --chart-2: var(--success);
+    --chart-3: var(--warning);
+    --chart-4: var(--danger);
+    --chart-5: 0 0% 36%;
+    --radius: 0.75rem;
+  }
+  .dark {
+    --background: 0 0% 10%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 12%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 12%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 12%;
+    --secondary: 0 0% 18%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 18%;
+    --muted-foreground: 0 0% 70%;
+    --accent: 0 0% 18%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 24%;
+    --input: 0 0% 24%;
+    --ring: 0 0% 64%;
+    --ink-strong: 0 0% 96%;
+    --ink-medium: 0 0% 80%;
+    --ink-soft: 0 0% 66%;
+    --info: 211 92% 66%;
+    --info-foreground: 0 0% 10%;
+    --info-surface: 212 55% 22%;
+    --success: 123 34% 52%;
+    --success-foreground: 0 0% 10%;
+    --success-surface: 123 18% 22%;
+    --warning: 30 95% 64%;
+    --warning-foreground: 0 0% 10%;
+    --warning-surface: 30 45% 22%;
+    --danger: 0 84% 68%;
+    --danger-foreground: 0 0% 10%;
+    --danger-surface: 0 42% 22%;
+    --chart-1: var(--info);
+    --chart-2: var(--success);
+    --chart-3: var(--warning);
+    --chart-4: var(--danger);
+    --chart-5: 0 0% 76%;
+  }
+}
+@layer base {
+  :root {
+    --font-weight-body: 300; /* Light */
+    --font-weight-heading-1: 600; /* Semi-bold */
+    --font-weight-heading-2: 600;
+    --font-weight-heading-3: 500; /* Medium */
+  }
+  * {
+    @apply border-border;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--input) / 0.65) transparent;
+  }
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  *::-webkit-scrollbar-thumb {
+    background: hsl(var(--input) / 0.7);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  html, body {
+    @apply bg-background text-foreground;
+    font-family: 'Ubuntu', system-ui, sans-serif;
+    font-weight: var(--font-weight-body);
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+  }
+  button, input, textarea, select {
+    font-family: inherit;
+  }
+  #root {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+  }
+  h1 { font-weight: var(--font-weight-heading-1); }
+  h2 { font-weight: var(--font-weight-heading-2); }
+  h3 { font-weight: var(--font-weight-heading-3); }
+
+  :focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px hsl(var(--ring) / 0.25);
+    border-color: hsl(var(--ring) / 0.45);
+  }
+}
+
+.app-shell {
+  background: hsl(var(--background));
+}
+
+.empty-chat-shell {
+  background: transparent;
+}
+
+.fibonacci-illustration {
+  display: block;
+  width: min(100%, 490px);
+  max-width: 490px;
+  aspect-ratio: 49 / 40;
+  height: auto;
+  opacity: 1;
+  filter: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Make chat math inherit surrounding text color instead of KaTeX's darker default. */
+.katex,
+.katex-display,
+.katex-display > .katex {
+  color: inherit;
+}
+
+/* Prevent browser scroll anchoring fighting manual top-lock math */
+[data-chat-container] {
+  overflow-anchor: none;
+}
+
+/* Blending/fading effect at top and bottom edges */
+.chat-fade-edges {
+  position: relative;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 4%,
+    black 96%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 4%,
+    black 96%,
+    transparent 100%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

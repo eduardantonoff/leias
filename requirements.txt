@@ -1,0 +1,4 @@
+google-adk[extensions] == 1.28.1
+pydantic == 2.12.5
+fastapi == 0.117.1
+uvicorn == 0.36.0
