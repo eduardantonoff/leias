@@ -1,50 +1,70 @@
-# Gemini Learning Graph
+# leias
 
-Grounded tutoring project built around:
+**An interactive agentic system for adaptive learning paths.**
 
-- a FastAPI app in `app/`
-- shared prompt/instruction and schema modules in `core/`
-- notebooks for graph extraction experiments in `notebooks/`
-- sample data and generated artifacts in `data/`
+leias turns study materials into inspectable learning graphs. Learners can explore the material, see how concepts connect, and follow a structured path through what they need to learn.
 
-## Repo Layout
+Rather than giving isolated chatbot answers, the system uses the graph to guide tutoring, retrieval, checkpoints, and progress tracking. It helps identify what to learn first, where understanding breaks down, and what to study next.
+
+Educator-authored knowledge graphs are supported as well. Learning experience designers can define domain-specific topics, concept relationships, learning boundaries, and supporting media. These curated graphs give the agent a structured teaching space while still allowing it to adapt to each learner.
+
+## Project Structure
 
 ```text
-app/                       runnable product app
-core/                      shared Python runtime modules
-notebooks/                 experiment and graph-building notebooks
-data/
-  knowledge/               knowledge graph JSON files
-  sample_docs/             sample PDFs used for notebook testing
-  generated/               generated graph artifacts
-requirements.txt           backend Python dependencies
+backend/          FastAPI API, graph pipeline, ADK agents, tools, and schemas
+backend/static/   sample graph data, quiz iframe, and media assets
+frontend/         React UI, graph visualization, and chat interface
 ```
 
-## Running The App
+Agent behavior is defined in `backend/instructions/`, with prompts separated by interaction phase so teaching style and tool use can be adjusted independently.
 
-Backend:
+## Model Runtime
+
+leias is designed to work with Gemma. By default, it uses a hosted Gemma-compatible endpoint through LiteLLM.
 
 ```bash
-cd <repo-root>
+GEMINI_API_KEY=...
+GEMINI_MODEL=gemini/gemma-4-31b-it
+```
+
+To use a self-hosted Gemma runtime, set `GEMINI_API_BASE`:
+
+```bash
+GEMINI_MODEL=...
+GEMINI_API_BASE=...
+```
+
+The configured endpoint must expose the chat interface expected by the backend model calls.
+
+## Setup
+
+```bash
+cp .env.example .env
+python -m venv .venv
 source .venv/bin/activate
-uvicorn app.backend.app:app --reload --host 0.0.0.0 --port 8010
-```
-
-Frontend source:
-
-```bash
-cd app/ui
+pip install -r requirements.txt
+cd frontend
 npm install
 npm run build
+cd ..
 ```
 
-The backend serves the built frontend from `app/ui/dist/`. If the frontend has not been built yet, the API still starts and the root page shows a short setup message.
+## Run Locally
 
-## Notes
+```bash
+source .venv/bin/activate
+uvicorn backend.app:app
+```
 
-- Local secrets stay in `.env` and are ignored by git.
-- Copy `.env.example` to `.env` and fill in the provider settings you want to use.
-- `app/ui/node_modules/` is intentionally ignored.
-- `app/ui/dist/` is a generated build artifact and is intentionally not committed.
-- The notebooks are for graph-extraction experiments and sample evaluation, not the production runtime.
-- Example PDFs and generated graphs live under `data/` so the repo root stays clean.
+Then open:
+
+```text
+http://127.0.0.1:8000
+```
+
+## Current Limits
+
+- Supported graph inputs: `.pdf`, `.png`, `.jpg`, `.jpeg`
+- Maximum upload size: 25 MB
+- PDF graph extraction renders up to 10 pages
+- Sessions are stored in memory; use a persistent store for multi-worker production deployments

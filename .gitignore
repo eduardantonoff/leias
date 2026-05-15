@@ -25,10 +25,10 @@ dist/
 .ipynb_checkpoints/
 
 # Frontend / Node
-app/ui/node_modules/
-app/ui/dist/
-app/ui/.vite/
-app/ui/coverage/
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/coverage/
 *.tsbuildinfo
 
 # Generated data artifacts

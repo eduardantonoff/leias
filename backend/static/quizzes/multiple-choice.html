@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Quiz</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  button, input, select, textarea {
+    font: inherit;
+    color: inherit;
+  }
+
+  body {
+    font-family: Ubuntu, system-ui, sans-serif;
+    font-weight: 300;
+    background: #fff;
+    color: #4b4b4b;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    overflow: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  .quiz {
+    max-width: 640px;
+    width: 100%;
+    animation: fadeIn 0.35s ease-out;
+  }
+
+  .question {
+    font-size: 15px;
+    line-height: 1.6;
+    font-weight: 400;
+    color: #1f1f1f;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .option {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 12px 14px;
+    background: #fff;
+    border: 1px solid #dbdbdb;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+    font-weight: inherit;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    color: #4b4b4b;
+    appearance: none;
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .option:hover:not(.locked) {
+    background: #f0f0f0;
+    border-color: #b5b5b5;
+  }
+
+  .option:active:not(.locked) {
+    background: #ececec;
+    border-color: #8f8f8f;
+  }
+
+  .option:focus-visible {
+    outline: none;
+    border-color: #6b6b6b;
+  }
+
+  .option[data-selected="true"] {
+    background: #eff6ff;
+    border-color: #3b82f6;
+  }
+
+  .option.correct {
+    background: rgba(61, 125, 64, 0.10) !important;
+    border-color: #3d7d40 !important;
+  }
+
+  .option.incorrect {
+    background: #fef2f2 !important;
+    border-color: #dc2626 !important;
+  }
+
+  .option.locked {
+    cursor: default;
+  }
+
+  .option-text {
+    flex: 1;
+    color: #4b4b4b;
+  }
+
+  .katex {
+    color: inherit;
+    font-size: 1em;
+  }
+
+  .katex-display {
+    margin: 0.45em 0;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 640px) {
+    body {
+      padding: 16px 12px;
+      align-items: flex-start;
+    }
+
+    .quiz {
+      max-width: none;
+    }
+
+    .question {
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    .options {
+      gap: 6px;
+    }
+
+    .option {
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="quiz">
+  <div class="question" id="q"></div>
+  <div class="options" id="opts"></div>
+</div>
+<script>
+(function(){
+  function localKey(quizId) {
+    return `quiz-attempt:${quizId}`;
+  }
+
+  function saveLocalAttempt(quizId, payload) {
+    if (!quizId) return;
+    try {
+      window.localStorage.setItem(localKey(quizId), JSON.stringify(payload));
+    } catch (e) {
+      console.error('Failed saving local attempt', e);
+    }
+  }
+
+  function loadLocalAttempt(quizId) {
+    if (!quizId) return null;
+    try {
+      const raw = window.localStorage.getItem(localKey(quizId));
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) {
+      console.error('Failed loading local attempt', e);
+      return null;
+    }
+  }
+
+  async function loadQuiz(quizId) {
+    const res = await fetch(`/api/quizzes/${encodeURIComponent(quizId)}`);
+    if (!res.ok) return null;
+    return res.json();
+  }
+
+  function renderMath(root) {
+    if (!root) return;
+    if (typeof window.renderMathInElement !== 'function') {
+      window.addEventListener('load', () => renderMath(root), { once: true });
+      return;
+    }
+    try {
+      window.renderMathInElement(root, {
+        delimiters: [
+          { left: '$$', right: '$$', display: true },
+          { left: '\\(', right: '\\)', display: false },
+          { left: '$', right: '$', display: false }
+        ],
+        throwOnError: false
+      });
+    } catch (e) {
+      console.error('Failed to render math', e);
+    }
+  }
+
+  function normalizeCorrectIndices(quiz, optionCount) {
+    const raw = Array.isArray(quiz.correct_indices)
+      ? quiz.correct_indices
+      : [quiz.correct_index];
+    const unique = new Set();
+    raw.forEach((value) => {
+      const parsed = Number(value);
+      if (!Number.isInteger(parsed)) return;
+      if (parsed < 0 || parsed >= optionCount) return;
+      unique.add(parsed);
+    });
+    return [...unique].sort((a, b) => a - b);
+  }
+
+  function showError(message) {
+    document.body.textContent = '';
+    const errorEl = document.createElement('p');
+    errorEl.style.color = '#ef4444';
+    errorEl.style.fontSize = '14px';
+    errorEl.style.textAlign = 'center';
+    errorEl.textContent = message;
+    document.body.appendChild(errorEl);
+  }
+
+  async function init() {
+    const params = new URLSearchParams(location.search);
+    const id = params.get('id');
+    if (!id) {
+      showError('Missing quiz id.');
+      return;
+    }
+
+    const quiz = await loadQuiz(id);
+    if(!quiz || !Array.isArray(quiz.options)) {
+      showError('Invalid quiz data.');
+      return;
+    }
+
+    const qEl = document.getElementById('q');
+    const list = document.getElementById('opts');
+    const quizId = String(quiz.quiz_id || id || '');
+
+    qEl.textContent = typeof quiz.question === 'string' ? quiz.question : 'Question';
+    const correctSet = normalizeCorrectIndices(quiz, quiz.options.length);
+    if (correctSet.length === 0) {
+      showError('Invalid quiz data.');
+      return;
+    }
+
+    list.setAttribute('role', 'radiogroup');
+    let locked = false;
+
+    function getOptions() {
+      return [...list.querySelectorAll('.option')];
+    }
+
+    function setOptionSelection(optionEl, selected) {
+      if(selected) {
+        optionEl.setAttribute('data-selected', 'true');
+        optionEl.setAttribute('aria-checked', 'true');
+        return;
+      }
+      optionEl.removeAttribute('data-selected');
+      optionEl.setAttribute('aria-checked', 'false');
+    }
+
+    quiz.options.forEach((opt, i) => {
+      const option = document.createElement('button');
+      option.type = 'button';
+      option.className = 'option';
+      option.dataset.index = String(i);
+      option.setAttribute('role', 'radio');
+      option.setAttribute('aria-checked', 'false');
+
+      const text = document.createElement('span');
+      text.className = 'option-text';
+      text.textContent = String(opt);
+
+      option.appendChild(text);
+
+      option.addEventListener('click', () => {
+        if(locked) return;
+        getOptions().forEach((item) => setOptionSelection(item, false));
+        setOptionSelection(option, true);
+        locked = true;
+        getOptions().forEach((item) => item.classList.add('locked'));
+        emitSelection();
+      });
+
+      list.appendChild(option);
+    });
+    renderMath(document.querySelector('.quiz'));
+
+    function selectedIndices() {
+      return getOptions()
+        .filter(option => option.getAttribute('data-selected') === 'true')
+        .map(option => parseInt(option.dataset.index, 10))
+        .filter(Number.isFinite);
+    }
+
+    function arraysEqual(a, b) {
+      if(a.length !== b.length) return false;
+      const s1 = [...a].sort((x, y) => x - y);
+      const s2 = [...b].sort((x, y) => x - y);
+      return s1.every((v, i) => v === s2[i]);
+    }
+
+    function emitSelection(shouldEmit) {
+      const sel = selectedIndices();
+      if(sel.length === 0) return;
+
+      const isCorrect = arraysEqual(sel, correctSet);
+
+      getOptions().forEach((option) => {
+        option.classList.remove('correct', 'incorrect');
+        const idx = parseInt(option.dataset.index, 10);
+        const isCorrectOption = correctSet.includes(idx);
+        const isSelected = option.getAttribute('data-selected') === 'true';
+
+        if(isCorrectOption) {
+          option.classList.add('correct');
+        } else if(isSelected) {
+          option.classList.add('incorrect');
+        }
+      });
+
+      const selectedDetails = sel.map(idx => {
+        const option = getOptions().find(x => parseInt(x.dataset.index, 10) === idx);
+        if(!option) return { index: idx, text: '' };
+        const textEl = option.querySelector('.option-text');
+        return { index: idx, text: textEl ? textEl.textContent || '' : '' };
+      });
+      const answerSummary = selectedDetails.map(d => d.text).join('');
+
+      saveLocalAttempt(quizId, {
+        submitted: true,
+        selected_indices: sel,
+        selected_answers: selectedDetails,
+        correct: isCorrect,
+        saved_at: new Date().toISOString(),
+      });
+
+      if (shouldEmit !== false) {
+        try {
+          window.parent.postMessage({
+            type: 'SandboxEvent',
+            text: `User selected ${answerSummary}`,
+            hide_from_ui: true,
+            quiz_id: quiz.quiz_id,
+            correct: isCorrect,
+            selected_indices: sel,
+            correct_indices: correctSet,
+            selected_answers: selectedDetails
+          }, location.origin);
+        } catch(e) { console.error('postMessage failed', e); }
+      }
+    }
+
+    function restoreAttemptIfAny() {
+      const saved = loadLocalAttempt(quizId);
+      if (!saved || !Array.isArray(saved.selected_indices) || saved.selected_indices.length === 0) return;
+
+      const selected = saved.selected_indices
+        .map((x) => Number(x))
+        .filter((x) => Number.isInteger(x));
+
+      getOptions().forEach((item) => setOptionSelection(item, false));
+      selected.forEach((idx) => {
+        const option = getOptions().find((x) => parseInt(x.dataset.index, 10) === idx);
+        if (option) setOptionSelection(option, true);
+      });
+
+      if (selected.length > 0) {
+        locked = true;
+        getOptions().forEach((item) => item.classList.add('locked'));
+      }
+
+      emitSelection(false);
+    }
+
+    restoreAttemptIfAny();
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>

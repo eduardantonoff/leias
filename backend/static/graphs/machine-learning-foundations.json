@@ -1,0 +1,518 @@
+{
+  "document": {
+    "id": "document",
+    "title": "Machine Learning Foundations",
+    "source_type": "curated_graph",
+    "domain": "Machine Learning",
+    "overview": "A curated introductory learning graph for machine learning foundations, designed by a learning experience designer and supported with visual resources."
+  },
+  "topics": [
+    {
+      "id": "A.1",
+      "title": "What Is Machine Learning?",
+      "summary": "Machine learning teaches computers to find patterns in data for prediction or decision-making instead of relying only on explicit rules.",
+      "context": "Introduces models, predictions, training, inference, and major families of machine learning."
+    },
+    {
+      "id": "A.2",
+      "title": "Data, Features, Labels, and Datasets",
+      "summary": "Machine learning works with datasets made of examples, features, and, in supervised learning, labels.",
+      "context": "Builds the vocabulary needed before discussing model training and evaluation."
+    },
+    {
+      "id": "A.3",
+      "title": "Supervised Learning",
+      "summary": "Supervised learning trains a model on labeled examples to map inputs to outputs, usually for regression or classification.",
+      "context": "Connects labeled data to model training, loss, and prediction."
+    },
+    {
+      "id": "A.4",
+      "title": "Train, Validation, and Test Splits",
+      "summary": "Datasets are split so models can be trained, tuned, and finally evaluated on data they have not seen before.",
+      "context": "Explains why reliable evaluation requires separating development data from final test data."
+    },
+    {
+      "id": "A.5",
+      "title": "Preparing Data for Machine Learning",
+      "summary": "Before modeling, data often needs missing-value handling, scaling, categorical encoding, feature engineering, and consistent preprocessing.",
+      "context": "Shows how raw data becomes usable model input."
+    },
+    {
+      "id": "A.6",
+      "title": "Overfitting, Underfitting, and Generalization",
+      "summary": "A model should work on new data, not just training data; overfitting and underfitting describe two common failures.",
+      "context": "Introduces generalization, model complexity, and the bias-variance tradeoff."
+    }
+  ],
+  "topic_edges": [
+    {
+      "source_topic_id": "A.1",
+      "target_topic_id": "A.2",
+      "type": "prerequisite"
+    },
+    {
+      "source_topic_id": "A.2",
+      "target_topic_id": "A.3",
+      "type": "prerequisite"
+    },
+    {
+      "source_topic_id": "A.2",
+      "target_topic_id": "A.5",
+      "type": "prerequisite"
+    },
+    {
+      "source_topic_id": "A.5",
+      "target_topic_id": "A.3",
+      "type": "prerequisite"
+    },
+    {
+      "source_topic_id": "A.5",
+      "target_topic_id": "A.4",
+      "type": "prerequisite"
+    },
+    {
+      "source_topic_id": "A.3",
+      "target_topic_id": "A.4",
+      "type": "prerequisite"
+    },
+    {
+      "source_topic_id": "A.3",
+      "target_topic_id": "A.6",
+      "type": "prerequisite"
+    },
+    {
+      "source_topic_id": "A.4",
+      "target_topic_id": "A.6",
+      "type": "prerequisite"
+    }
+  ],
+  "concepts": [
+    {
+      "id": "A.1.C1",
+      "topic_id": "A.1",
+      "title": "Model",
+      "summary": "A learned mapping from inputs to outputs.",
+      "context": "The model is the object trained from data and then used to make predictions.",
+      "prerequisite_ids": [],
+      "evidence": []
+    },
+    {
+      "id": "A.1.C2",
+      "topic_id": "A.1",
+      "title": "Prediction",
+      "summary": "The output a model produces for a given input.",
+      "context": "Predictions are compared with desired outcomes during training or used directly during inference.",
+      "prerequisite_ids": [
+        "A.1.C1"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "A.1.C3",
+      "topic_id": "A.1",
+      "title": "Training",
+      "summary": "The process of improving a model from examples.",
+      "context": "Training adjusts the model so its predictions become more useful on future inputs.",
+      "prerequisite_ids": [
+        "A.1.C1"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "A.1.C4",
+      "topic_id": "A.1",
+      "title": "Inference",
+      "summary": "Using a trained model to make predictions.",
+      "context": "Inference is the application phase after a model has already learned from data.",
+      "prerequisite_ids": [
+        "A.1.C1",
+        "A.1.C2"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "A.1.C5",
+      "topic_id": "A.1",
+      "title": "Supervised Learning",
+      "summary": "Learning from examples that include known correct answers.",
+      "context": "Supervised learning is one of the main families of machine learning.",
+      "prerequisite_ids": [
+        "A.1.C3"
+      ],
+      "evidence": [],
+      "media": [
+        {
+          "type": "IMAGE",
+          "url": "/static/media/images/viz-labeled_example.png",
+          "caption": "A labeled example contains input features and a known target label.",
+          "placement": "Use when introducing supervised learning or labels."
+        },
+        {
+          "type": "IMAGE",
+          "url": "/static/media/images/viz-training-a-model-01.png",
+          "caption": "A model first makes a prediction from a labeled example.",
+          "placement": "Use when explaining the first step of training."
+        }
+      ]
+    },
+    {
+      "id": "A.1.C6",
+      "topic_id": "A.1",
+      "title": "Unsupervised Learning",
+      "summary": "Learning patterns from data without known labels.",
+      "context": "Unsupervised learning is useful when the structure in the data is unknown.",
+      "prerequisite_ids": [
+        "A.1.C3"
+      ],
+      "evidence": [],
+      "media": [
+        {
+          "type": "IMAGE",
+          "url": "/static/media/images/viz-unlabeled_example.png",
+          "caption": "An unlabeled example contains input features without a known target label.",
+          "placement": "Use when contrasting unsupervised learning with supervised learning."
+        }
+      ]
+    },
+    {
+      "id": "A.2.C1",
+      "topic_id": "A.2",
+      "title": "Example",
+      "summary": "One row, case, observation, or instance in a dataset.",
+      "context": "Examples are the individual units a model learns from or predicts on.",
+      "prerequisite_ids": [],
+      "evidence": []
+    },
+    {
+      "id": "A.2.C2",
+      "topic_id": "A.2",
+      "title": "Feature",
+      "summary": "An input variable that describes an example.",
+      "context": "Features are the information the model uses to make predictions.",
+      "prerequisite_ids": [
+        "A.2.C1"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "A.2.C3",
+      "topic_id": "A.2",
+      "title": "Label",
+      "summary": "The known target answer for a supervised learning example.",
+      "context": "Labels let supervised models compare predictions with correct outcomes.",
+      "prerequisite_ids": [
+        "A.2.C1"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "A.2.C4",
+      "topic_id": "A.2",
+      "title": "Dataset",
+      "summary": "A collection of examples used for learning or evaluation.",
+      "context": "Datasets organize examples, features, and labels into material a model can use.",
+      "prerequisite_ids": [
+        "A.2.C1",
+        "A.2.C2"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "A.2.C5",
+      "topic_id": "A.2",
+      "title": "Numerical Feature",
+      "summary": "A feature represented by numbers with meaningful magnitude.",
+      "context": "Numerical features often need scaling or distribution checks before modeling.",
+      "prerequisite_ids": [
+        "A.2.C2"
+      ],
+      "evidence": [],
+      "media": [
+        {
+          "type": "IMAGE",
+          "url": "/static/media/images/viz-numerical-feature.png",
+          "caption": "A numerical feature can be inspected through its distribution.",
+          "placement": "Use when contrasting numerical and categorical features."
+        }
+      ]
+    },
+    {
+      "id": "A.2.C6",
+      "topic_id": "A.2",
+      "title": "Categorical Feature",
+      "summary": "A feature represented by categories rather than magnitude.",
+      "context": "Categorical features usually need encoding before many models can use them.",
+      "prerequisite_ids": [
+        "A.2.C2"
+      ],
+      "evidence": [],
+      "media": [
+        {
+          "type": "IMAGE",
+          "url": "/static/media/images/viz-categorical-feature.png",
+          "caption": "A categorical feature has discrete category values.",
+          "placement": "Use when explaining feature types."
+        }
+      ]
+    },
+    {
+      "id": "A.3.C1",
+      "topic_id": "A.3",
+      "title": "Regression",
+      "summary": "A supervised learning task that predicts a numeric value.",
+      "context": "Regression is used when the target has ordered numeric magnitude.",
+      "prerequisite_ids": [
+        "A.1.C5",
+        "A.2.C3"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "A.3.C2",
+      "topic_id": "A.3",
+      "title": "Classification",
+      "summary": "A supervised learning task that predicts a category.",
+      "context": "Classification is used when the model chooses among discrete classes.",
+      "prerequisite_ids": [
+        "A.1.C5",
+        "A.2.C3"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "A.3.C3",
+      "topic_id": "A.3",
+      "title": "Loss",
+      "summary": "A measure of how wrong a model prediction is.",
+      "context": "Loss gives the training process a signal for how to improve the model.",
+      "prerequisite_ids": [
+        "A.1.C2"
+      ],
+      "evidence": [],
+      "media": [
+        {
+          "type": "IMAGE",
+          "url": "/static/media/images/viz-training-a-model-02.png",
+          "caption": "Prediction error is converted into a learning signal.",
+          "placement": "Use when introducing loss during supervised training."
+        }
+      ]
+    },
+    {
+      "id": "A.3.C4",
+      "topic_id": "A.3",
+      "title": "Training Loop",
+      "summary": "Repeated prediction, error measurement, and model update.",
+      "context": "The supervised training loop gradually improves model parameters over many examples.",
+      "prerequisite_ids": [
+        "A.3.C3"
+      ],
+      "evidence": [],
+      "media": [
+        {
+          "type": "IMAGE",
+          "url": "/static/media/images/viz-training-a-model-03.png",
+          "caption": "Training repeats prediction, loss calculation, and update.",
+          "placement": "Use when explaining how supervised learning improves over time."
+        }
+      ]
+    },
+    {
+      "id": "A.4.C1",
+      "topic_id": "A.4",
+      "title": "Training Set",
+      "summary": "Data used to fit model parameters.",
+      "context": "The model directly learns from the training set.",
+      "prerequisite_ids": [
+        "A.2.C4"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "A.4.C2",
+      "topic_id": "A.4",
+      "title": "Validation Set",
+      "summary": "Data used during development to tune choices and compare models.",
+      "context": "Validation data helps choose model settings without touching the final test set.",
+      "prerequisite_ids": [
+        "A.4.C1"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "A.4.C3",
+      "topic_id": "A.4",
+      "title": "Test Set",
+      "summary": "Held-out data used for final evaluation.",
+      "context": "The test set estimates how the finished model performs on unseen data.",
+      "prerequisite_ids": [
+        "A.4.C2"
+      ],
+      "evidence": [],
+      "media": [
+        {
+          "type": "IMAGE",
+          "url": "/static/media/images/viz-data-splits.png",
+          "caption": "A common split separates training, validation, and test data.",
+          "placement": "Use when explaining why evaluation data must be separated."
+        }
+      ]
+    },
+    {
+      "id": "A.4.C4",
+      "topic_id": "A.4",
+      "title": "Generalization Estimate",
+      "summary": "An estimate of performance on data the model has not seen.",
+      "context": "Good evaluation tries to approximate future performance, not memorized training performance.",
+      "prerequisite_ids": [
+        "A.4.C3"
+      ],
+      "evidence": [],
+      "media": [
+        {
+          "type": "IMAGE",
+          "url": "/static/media/images/viz-evaluating-a-model.png",
+          "caption": "Model evaluation compares predictions on held-out data with true answers.",
+          "placement": "Use when connecting test performance to generalization."
+        }
+      ]
+    },
+    {
+      "id": "A.5.C1",
+      "topic_id": "A.5",
+      "title": "Missing Values",
+      "summary": "Absent or unknown feature values that must be handled before modeling.",
+      "context": "Missing data can break models or bias results if ignored.",
+      "prerequisite_ids": [
+        "A.2.C2"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "A.5.C2",
+      "topic_id": "A.5",
+      "title": "Feature Scaling",
+      "summary": "Transforming numerical features onto comparable ranges.",
+      "context": "Scaling helps models that are sensitive to feature magnitude.",
+      "prerequisite_ids": [
+        "A.2.C5"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "A.5.C3",
+      "topic_id": "A.5",
+      "title": "One-Hot Encoding",
+      "summary": "Representing categories as indicator columns.",
+      "context": "One-hot encoding converts categorical values into numeric model inputs.",
+      "prerequisite_ids": [
+        "A.2.C6"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "A.5.C4",
+      "topic_id": "A.5",
+      "title": "Feature Engineering",
+      "summary": "Creating useful model inputs from raw data.",
+      "context": "Feature engineering can make important patterns easier for a model to learn.",
+      "prerequisite_ids": [
+        "A.2.C2"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "A.5.C5",
+      "topic_id": "A.5",
+      "title": "Preprocessing Consistency",
+      "summary": "Applying the same preprocessing during training and inference.",
+      "context": "A model can fail if production inputs are transformed differently from training inputs.",
+      "prerequisite_ids": [
+        "A.1.C4",
+        "A.5.C2",
+        "A.5.C3"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "A.6.C1",
+      "topic_id": "A.6",
+      "title": "Overfitting",
+      "summary": "When a model fits training data too closely and performs poorly on new data.",
+      "context": "Overfitting means the model has learned noise or accidental patterns rather than durable structure.",
+      "prerequisite_ids": [
+        "A.4.C4"
+      ],
+      "evidence": [],
+      "media": [
+        {
+          "type": "IMAGE",
+          "url": "/static/media/images/viz-overfitting.png",
+          "caption": "Overfitting and underfitting show different failures of model complexity.",
+          "placement": "Use when contrasting model fit with generalization."
+        }
+      ]
+    },
+    {
+      "id": "A.6.C2",
+      "topic_id": "A.6",
+      "title": "Underfitting",
+      "summary": "When a model is too simple to capture the important pattern.",
+      "context": "Underfitting usually produces poor performance on both training and test data.",
+      "prerequisite_ids": [
+        "A.4.C4"
+      ],
+      "evidence": [],
+      "media": [
+        {
+          "type": "IMAGE",
+          "url": "/static/media/images/viz-overfitting.png",
+          "caption": "Underfitting appears when the model cannot capture the underlying structure.",
+          "placement": "Use when introducing model complexity."
+        }
+      ]
+    },
+    {
+      "id": "A.6.C3",
+      "topic_id": "A.6",
+      "title": "Generalization",
+      "summary": "The ability to perform well on new examples.",
+      "context": "Generalization is the central goal of model evaluation and regularization.",
+      "prerequisite_ids": [
+        "A.4.C4"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "A.6.C4",
+      "topic_id": "A.6",
+      "title": "Bias-Variance Tradeoff",
+      "summary": "The tension between models that are too simple and models that are too sensitive.",
+      "context": "The tradeoff explains why both underfitting and overfitting can hurt performance.",
+      "prerequisite_ids": [
+        "A.6.C1",
+        "A.6.C2"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "A.6.C5",
+      "topic_id": "A.6",
+      "title": "Regularization",
+      "summary": "A technique that discourages overly complex models.",
+      "context": "Regularization helps reduce overfitting and improve generalization.",
+      "prerequisite_ids": [
+        "A.6.C1"
+      ],
+      "evidence": [],
+      "media": [
+        {
+          "type": "IMAGE",
+          "url": "/static/media/images/viz-regularization.png",
+          "caption": "Regularization constrains model complexity to improve generalization.",
+          "placement": "Use when explaining how overfitting can be reduced."
+        }
+      ]
+    }
+  ]
+}
