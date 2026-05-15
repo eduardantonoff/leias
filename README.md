@@ -1,5 +1,3 @@
-# leias
-
 **An interactive agentic system for adaptive learning paths.**
 
 leias turns study materials into inspectable learning graphs. Learners can explore the material, see how concepts connect, and follow a structured path through what they need to learn.
