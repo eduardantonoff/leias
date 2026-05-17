@@ -182,15 +182,19 @@ export function GraphBuilderPage({
         }
     };
 
-    const resetGraph = () => {
-        abortRef.current?.abort();
-        abortRef.current = null;
+    const clearGraph = () => {
         setDocument(null);
         setTopics([]);
         setTopicEdges([]);
         setConcepts([]);
         setErrorMessage(null);
         setQuestion("");
+    };
+
+    const resetGraph = () => {
+        abortRef.current?.abort();
+        abortRef.current = null;
+        clearGraph();
         setBuildIntent("");
         setSelectedFile(null);
         setStatus("idle");
@@ -202,7 +206,7 @@ export function GraphBuilderPage({
         const controller = new AbortController();
         abortRef.current = controller;
 
-        resetGraph();
+        clearGraph();
         setStatus("building");
 
         try {
@@ -275,7 +279,9 @@ export function GraphBuilderPage({
         if (!selectedFile || status === "building") {
             return;
         }
-        await startBuild(selectedFile, buildIntent);
+        const submittedIntent = buildIntent;
+        setBuildIntent("");
+        await startBuild(selectedFile, submittedIntent);
     };
 
     const startChatSession = async (text?: string) => {
